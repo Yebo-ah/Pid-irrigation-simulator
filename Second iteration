@@ -1,0 +1,45 @@
+import matplotlib.pyplot as plt
+
+class PIDController:
+    def __init__(self, kp, ki, kd, setpoint):
+        self.kp = kp
+        self.ki = ki
+        self.kd = kd
+        self.setpoint = setpoint
+        self.integral = 0
+        self.prev_error = 0
+
+    def compute(self, measured_value, dt):
+        error = self.setpoint - measured_value
+        self.integral += error * dt
+        derivative = (error - self.prev_error) / dt
+        output = self.kp * error + self.ki * self.integral + self.kd * derivative
+        self.prev_error = error
+        return output
+
+# Simulate a water tank: level rises/falls based on controller output
+def simulate():
+    pid = PIDController(kp=2.0, ki=0.3, kd=0.3, setpoint=50)  # target: 50% level
+    level = 0.0
+    dt = 0.5
+    steps = 100
+    history = []
+
+    for _ in range(steps):
+        output = pid.compute(level, dt)
+        inflow = max(0, min(output, 10))  # valve can't push more than 10 units/step
+        level += inflow * dt - 0.5  # natural drain of 0.5 per step
+        level = max(0, level)
+        history.append(level)
+
+    plt.plot(history)
+    plt.axhline(y=50, color='r', linestyle='--', label='Target level')
+    plt.xlabel('Time step')
+    plt.ylabel('Tank level (%)')
+    plt.title('PID-Controlled Irrigation Tank Simulation')
+    plt.legend()
+    plt.savefig('tank_simulation.png')
+    plt.show()
+    print("Final level:", history[-1])
+
+simulate()
