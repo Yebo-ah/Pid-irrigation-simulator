@@ -37,10 +37,19 @@ What I changed and learned
 
 I tried different values for kp, ki, and kd to see their effect:
 
-Higher kp → faster response, but more overshoot past the target
-Higher ki → eliminates any small leftover offset, but can make the system oscillate if pushed too high
-Higher kd → smooths the approach, reducing overshoot, but too much makes the system sluggish
-Why this project
+## Iteration Log
+
+**v1 — initial values: kp=1.2, ki=0.3, kd=0.05**
+Tank reached target smoothly but slowly.
+
+**v2 — increased kp to 2.0**
+Faster response, but noticeable overshoot past the 50% target before settling.
+
+**v3 — increased kd to 0.3 (kp still 2.0)**
+Overshoot from v2 was visibly reduced. The derivative term "braked" the
+system as it approached the target, without losing the faster response
+gained from raising kp. This is the final tuned version reflected in
+the code above.
 
 My background is in aerospace and control systems (pitch stability analysis, PLC-based automation), and I'm moving toward robotics and autonomous systems, where PID control is one of the most fundamental building blocks — used in everything from drone stabilization to robotic arm positioning. This project is a deliberate, hands-on bridge between the control theory I already know and the software skills the field requires.
 
